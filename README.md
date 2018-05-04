@@ -6,5 +6,4 @@ React Foursquare API Demo
 https://foursquare.now.sh/
 
 ### To run locally
-`npm install`
-`npm start`
+`npm install && npm start`
