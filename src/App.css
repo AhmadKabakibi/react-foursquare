@@ -7,3 +7,12 @@ body {
 .navbar {
   background-color: #e6eeff !important;
 }
+.card {
+  cursor: pointer;
+}
+.card-header {
+  background-color: #e6eeff;
+  background-position: right center;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}

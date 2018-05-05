@@ -4,7 +4,9 @@ import {
   Card,
   CardText,
   CardBody,
-  CardTitle
+  CardTitle,
+  CardFooter,
+  CardHeader
 } from 'reactstrap'
 
 const getIcon = (data) => {
@@ -13,19 +15,27 @@ const getIcon = (data) => {
   }
 }
 
+const openMap = (data) => {
+  return () => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURI(data.name)}%20${encodeURI(data.location.formattedAddress[0])}`)
+}
+
+const cardHeaderStyles = (data) => {
+  return {
+    backgroundImage: `url(${getIcon(data)})`
+  }
+}
+
 const Venue = ({ data }) => {
   return (
-    <Card style={{
-      backgroundImage: `url(${getIcon(data)})`,
-      backgroundPosition: `right bottom`,
-      backgroundRepeat: `no-repeat`,
-      backgroundColor: `#e6eeff`
-    }}>
+    <Card onClick={openMap(data)}>
+      <CardHeader style={cardHeaderStyles(data)}>
+        {data.categories[0].name}
+      </CardHeader>
       <CardBody>
         <CardTitle>{data.name}</CardTitle>
         <CardText>{data.location.address}</CardText>
         <CardText>
-          <Badge color='primary' pill>{data.categories[0].name}</Badge>
+          <Badge color='success'>{data.location.distance}mts</Badge>
         </CardText>
       </CardBody>
     </Card>
