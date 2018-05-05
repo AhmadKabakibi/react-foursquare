@@ -16,7 +16,6 @@ import './App.css'
 function getVenues () {
   this.finder.getVenues(this.state.radius, this.state.query)
     .then(results => {
-      console.log(results)
       const items = results.response.groups[0].items
       this.setState({
         showingResults: items.length,
