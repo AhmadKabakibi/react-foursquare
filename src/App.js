@@ -8,6 +8,7 @@ import {
 import _ from 'lodash'
 import Navigation from './components/Navigation'
 import Venue from './components/Venue'
+import ErrorAlert from './components/ErrorAlert'
 import VenueFinder from './modules/VenueFinder'
 import 'bootstrap/dist/css/bootstrap.css'
 import './App.css'
@@ -26,6 +27,9 @@ function getVenues () {
         })
       })
     })
+    .catch(error => {
+      this.setState({ error: error.message })
+    })
 }
 
 class App extends Component {
@@ -37,7 +41,8 @@ class App extends Component {
       results: [],
       radius: 500,
       showingResults: 0,
-      total: 0
+      total: 0,
+      error: ''
     }
     this.getVenues = _.debounce(getVenues.bind(this), 300)
     this.getVenues()
@@ -52,11 +57,19 @@ class App extends Component {
   renderResults () {
     return this.state.results
   }
+  handleQueryKeyUp (event) {
+    if (event.key === 'Enter') {
+      event.target.blur()
+    }
+    this.setState({ query: event.target.value })
+    this.getVenues()
+  }
   render () {
     return (
       <div>
         <Navigation title='Foursquare API' />
         <div className='container'>
+          {this.state.error && <ErrorAlert message={this.state.error} />}
           <div className='text-center'>
             <h1 className='display-4'>Venue Finder</h1>
             <p className='lead mb-4'>Find venues near you</p>
@@ -66,12 +79,7 @@ class App extends Component {
                   type='text'
                   id='query'
                   placeholder='Search term...'
-                  onChange={event => {
-                    this.setState({ query: event.target.value })
-                  }}
-                  onKeyUp={event => {
-                    this.getVenues()
-                  }}
+                  onChange={this.handleQueryKeyUp.bind(this)}
                   value={this.state.query}
                 />
               </FormGroup>

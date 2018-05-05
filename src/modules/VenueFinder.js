@@ -25,24 +25,30 @@ export default class VenueFinder {
         window.sessionStorage.setItem('userLocation', this.userLocation)
         resolve(this.userLocation)
       }
-      const onGeoError = error => reject(error)
+      const onGeoError = (error) => {
+        reject(error)
+      }
       navigator.geolocation.getCurrentPosition(onGeoSuccess, onGeoError)
     })
   }
 
   getVenues (radius, query) {
     return new Promise((resolve, reject) => {
-      this.getUserLocation().then(() => {
-        radius = parseInt(radius, 10) || this.defaultRange
-        this.api.venues.explore({
-          ll: this.userLocation,
-          limit: this.limit,
-          query,
-          radius
-        }, (e, r) => {
-          e ? reject(e) : resolve(r)
+      this.getUserLocation()
+        .then(() => {
+          radius = parseInt(radius, 10) || this.defaultRange
+          this.api.venues.explore({
+            ll: this.userLocation,
+            limit: this.limit,
+            query,
+            radius
+          }, (e, r) => {
+            e ? reject(e) : resolve(r)
+          })
         })
-      })
+        .catch((error) => {
+          reject(error)
+        })
     })
   }
 }
