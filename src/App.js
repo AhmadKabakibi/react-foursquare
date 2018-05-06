@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import {
+  Alert,
   CardColumns,
   Form,
   FormGroup,
@@ -14,9 +15,16 @@ import 'bootstrap/dist/css/bootstrap.css'
 import './App.css'
 
 function getVenues () {
+  this.setState({
+    results: [],
+    noResults: false,
+    showingResults: 0,
+    total: 0
+  })
   this.finder.getVenues(this.state.radius, this.state.query)
     .then(results => {
       const items = results.response.groups[0].items
+      this.setState({ noResults: !items.length.length })
       this.setState({
         showingResults: items.length,
         total: results.response.totalResults,
@@ -39,6 +47,7 @@ class App extends Component {
     this.state = {
       query: '',
       results: [],
+      noResults: false,
       radius: 500,
       showingResults: 0,
       total: 0,
@@ -55,7 +64,22 @@ class App extends Component {
     }
   }
   renderResults () {
-    return this.state.results
+    if (this.state.results.length) {
+      return (
+        <CardColumns>{this.state.results}</CardColumns>
+      )
+    } else if (this.state.noResults) {
+      return (
+        <Alert color='primary'>No venues found.</Alert>
+      )
+    } else {
+      return (
+        <div>
+          <div className='pacman' />
+          <div className='dot' />
+        </div>
+      )
+    }
   }
   handleQueryKeyUp (event) {
     if (event.key === 'Enter') {
@@ -102,9 +126,7 @@ class App extends Component {
               </p>
             </Form>
           </div>
-          <CardColumns>
-            {this.renderResults()}
-          </CardColumns>
+          {this.renderResults()}
         </div>
       </div>
     )
